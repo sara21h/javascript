@@ -3,26 +3,130 @@
     <ion-header :translucent="true">
       <ion-toolbar>
         <ion-title>Comptador</ion-title>
+      <ion-buttons slot="primary">
+      <ion-button color="primary" fill="solid" @click="info">
+        <ion-icon :icon="infoIcon"></ion-icon>
+      </ion-button>
+      </ion-buttons>
       </ion-toolbar>
     </ion-header>
 
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Comptador</ion-title>
-        </ion-toolbar>
+      <ion-header class="ion-no-border ion-padding-top ion-padding-horizontal">
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <div class="ion-text-start">
+                Your Score: {{score}}
+              </div>
+            </ion-col>
+            <ion-col>
+              <div class="ion-text-end">
+                Time left: {{timeleft}}
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-header>
 
       <div id="container">
-        <strong>Noseque</strong>
-        <p>AA <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+        <strong>Noseque</strong> <br>
+        <ion-button color="primary" @click="tap">
+          Tap me
+        </ion-button>
       </div>
     </ion-content>
   </ion-page>
 </template>
 
-<script setup lang="ts">
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
+<script>
+import {
+  alertController,
+  IonButton,
+  IonCol,
+  IonGrid,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+  toastController
+} from '@ionic/vue';
+import {defineComponent} from "vue";
+import {informationCircleOutline} from 'ionicons/icons';
+const INITIAL_TIME = 5
+
+export default defineComponent({
+  name: 'HomePage',
+  components: {
+    IonContent,
+    IonHeader,
+    IonPage,
+    IonButtons,
+    IonButton,
+    IonGrid,
+    IonTitle,
+    IonCol,
+    IonToolbar
+  },
+  setup(){
+    return {
+      infoIcon: informationCircleOutline,
+      started: false,
+      counterInterval: null
+    }
+  },
+  data() {
+    return {
+      score: 0,
+      timeleft: INITIAL_TIME
+    }
+},
+  methods:{
+    async info(){
+      const alert = await alertController.create({
+        header: 'Informació',
+        subHeader: 'App creada per jojo',
+        message: 'Aplicació per a fer clicks',
+        buttons: ['OK']
+      });
+      await alert.present();
+    },
+    tap() {
+      this.score++;
+      if(!this.started) {
+        this.counterInterval = setInterval(() => {
+          this.timeleft--
+          console.log('A')
+          console.log(this.timeleft);
+        }, 1000)
+        this.started = true
+      }
+    },
+      async showResult(){
+        const toast = await toastController.create({
+          color: 'dark',
+          duration: 2000,
+          message: 'Temps acabat. Has fet ${this.score}',
+          showCloseButton: true
+        });
+        await toast.present();
+      },
+    watch: {
+      timeleft: function (newTimeLeft) {
+        if (newTimeLeft <= 0) {
+          console.log('FINAL')
+          this.started = false
+          this.timeleft = INITIAL_TIME
+          clearInterval(this.counterInterval)
+          this.showResult()
+          this.score = 0
+        }
+      }
+      }
+    }
+});
 </script>
 
 <style scoped>
