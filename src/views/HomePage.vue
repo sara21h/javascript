@@ -30,7 +30,8 @@
       </ion-header>
 
       <div id="container">
-        <strong>Noseque</strong> <br>
+        <strong>Clica per a sumar punts!</strong> <br>
+        <br>
         <ion-button color="primary" @click="tap">
           Tap me
         </ion-button>
@@ -53,8 +54,8 @@ import {
   IonToolbar,
   toastController
 } from '@ionic/vue';
-import {defineComponent} from "vue";
-import {informationCircleOutline} from 'ionicons/icons';
+import { defineComponent } from "vue";
+import { informationCircleOutline } from 'ionicons/icons';
 const INITIAL_TIME = 5
 
 export default defineComponent({
@@ -70,7 +71,7 @@ export default defineComponent({
     IonCol,
     IonToolbar
   },
-  setup(){
+  setup() {
     return {
       infoIcon: informationCircleOutline,
       started: false,
@@ -82,9 +83,9 @@ export default defineComponent({
       score: 0,
       timeleft: INITIAL_TIME
     }
-},
-  methods:{
-    async info(){
+  },
+  methods: {
+    async info() {
       const alert = await alertController.create({
         header: 'Informació',
         subHeader: 'App creada per jojo',
@@ -95,7 +96,7 @@ export default defineComponent({
     },
     tap() {
       this.score++;
-      if(!this.started) {
+      if (!this.started) {
         this.counterInterval = setInterval(() => {
           this.timeleft--
           console.log('A')
@@ -104,35 +105,36 @@ export default defineComponent({
         this.started = true
       }
     },
-      async showResult(){
-        const toast = await toastController.create({
-          color: 'dark',
-          duration: 2000,
-          message: 'Temps acabat. Has fet ${this.score}',
-          showCloseButton: true
-        });
-        await toast.present();
-      },
-    watch: {
-      timeleft: function (newTimeLeft) {
-        if (newTimeLeft <= 0) {
-          console.log('FINAL')
-          this.started = false
-          this.timeleft = INITIAL_TIME
-          clearInterval(this.counterInterval)
-          this.showResult()
-          this.score = 0
-        }
-      }
+    async showResult() {
+      const toast = await toastController.create({
+        color: 'dark',
+        duration: 2000,
+        message: `Temps acabat. Has fet ${this.score} clicks`,
+        showCloseButton: true
+      });
+      await toast.present();
+    },
+  },
+  watch: {
+    timeleft: function (newTimeLeft) {
+      if (newTimeLeft <= 0) {
+        console.log('FINAL')
+        this.started = false
+        this.timeleft = INITIAL_TIME
+        clearInterval(this.counterInterval)
+        this.showResult()
+        this.score = 0
       }
     }
+  }
 });
 </script>
+
 
 <style scoped>
 #container {
   text-align: center;
-  
+
   position: absolute;
   left: 0;
   right: 0;
@@ -148,9 +150,9 @@ export default defineComponent({
 #container p {
   font-size: 16px;
   line-height: 22px;
-  
+
   color: #8c8c8c;
-  
+
   margin: 0;
 }
 
