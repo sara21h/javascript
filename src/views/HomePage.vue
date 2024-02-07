@@ -2,7 +2,7 @@
   <ion-page>
     <ion-header :translucent="true">
       <ion-toolbar>
-        <ion-title>Comptador</ion-title>
+        <ion-title id="titol">COMPTADOR</ion-title>
       <ion-buttons slot="primary">
       <ion-button color="primary" fill="solid" @click="info">
         <ion-icon :icon="infoIcon"></ion-icon>
@@ -11,18 +11,18 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content :fullscreen="true">
+    <ion-content :fullscreen="true" class="custom-font">
       <ion-header class="ion-no-border ion-padding-top ion-padding-horizontal">
         <ion-grid>
           <ion-row>
             <ion-col>
               <div class="ion-text-start">
-                Your Score: {{score}}
+                Punts: {{score}}
               </div>
             </ion-col>
             <ion-col>
               <div class="ion-text-end">
-                Time left: {{timeleft}}
+                Temps restant: {{timeleft}}
               </div>
             </ion-col>
           </ion-row>
@@ -32,8 +32,8 @@
       <div id="container">
         <strong>Clica per a sumar punts!</strong> <br>
         <br>
-        <ion-button color="primary" @click="tap">
-          Tap me
+        <ion-button id="tapMeButton" color="primary" @click="tap" class="custom-font">
+          Clica'm
         </ion-button>
       </div>
     </ion-content>
@@ -56,6 +56,7 @@ import {
 } from '@ionic/vue';
 import { defineComponent } from "vue";
 import { informationCircleOutline } from 'ionicons/icons';
+import { createAnimation } from '@ionic/vue';
 const INITIAL_TIME = 5
 
 export default defineComponent({
@@ -85,6 +86,13 @@ export default defineComponent({
     }
   },
   methods: {
+    bounce () {
+      const animation = createAnimation()
+      animation.addElement(document.getElementById('tapMeButton'))
+        .duration(1000)
+        .fromTo('transform', 'scale(0.9)', 'scale(1.0)')
+      animation.play()
+    },
     async info() {
       const alert = await alertController.create({
         header: 'Informació',
@@ -95,6 +103,7 @@ export default defineComponent({
       await alert.present();
     },
     tap() {
+      this.bounce()
       this.score++;
       if (!this.started) {
         this.counterInterval = setInterval(() => {
@@ -132,6 +141,12 @@ export default defineComponent({
 
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css?family=Karla:400');
+
+.custom-font {
+  font-family: 'Karla', sans-serif;
+}
+
 #container {
   text-align: center;
 
@@ -154,6 +169,14 @@ export default defineComponent({
   color: #8c8c8c;
 
   margin: 0;
+}
+
+#titol {
+  letter-spacing: 2px;
+  font-family: 'Karla', sans-serif;
+  margin-left: 3px;
+  color: #7974ff;
+  font-weight: bold;
 }
 
 #container a {
